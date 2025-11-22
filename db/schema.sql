@@ -38,7 +38,6 @@ CREATE TABLE `User` (
   profile_picture VARCHAR(255),
   status_subs     ENUM('active','inactive') DEFAULT 'inactive',
   device_type     ENUM('mobile','desktop','tablet') DEFAULT 'desktop',
-  personal_rating DECIMAL(3,1),
   token           VARCHAR(100),
   verified        ENUM('pending','yes') DEFAULT 'pending'
 ) ENGINE=InnoDB;

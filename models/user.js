@@ -1,0 +1,1 @@
+// models/user.js (user model definition with Sequelize)

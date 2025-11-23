@@ -4,11 +4,7 @@
 const { Model } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
-    class User extends Model {
-        static associate(models) {
-            // define association here if needed
-        }
-    }
+    class User extends Model {}
 
     User.init(
         {
@@ -22,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
             user_email: DataTypes.STRING,
             user_password: DataTypes.STRING,
             profile_picture: DataTypes.STRING,
-            status_subscribe: {
+            status_subs: {
                 type:DataTypes.ENUM("active","inactive"),
                 defaultValue:"inactive",
             },
@@ -39,9 +35,10 @@ module.exports = (sequelize, DataTypes) => {
         {
             sequelize,
             modelName: "User",
-            tableName: "Users",
+            tableName: "User",
             timestamps: false,
         }
     );
-}
+     return User;
+};
 

@@ -4,7 +4,9 @@ const express = require('express');
 const { register, login, verifyEmail } = require('../controllers/authControllers');
 
 const router = express.Router();
+// Register
 router.post('/register', register);
-// nanti bisa tambah: router.get('/verify-email', verifyEmail);
+// Verify Email
+router.get('/verify-email', verifyEmail);
 
 module.exports = router;

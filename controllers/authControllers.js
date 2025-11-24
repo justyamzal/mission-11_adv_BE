@@ -1,18 +1,19 @@
 // Controllers/authControllers.js, (logic for register/login);
 
 const bcrypt = require('bcrypt');
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4, validate } = require('uuid');
 const { User } = require('../models');
 const { sendVerificationEmail } = require('../lib/mailer');
+const jwt = require('jsonwebtoken');
 
 const SALT_ROUNDS = 10;
 
-//----- Helpers for validasi input register
+//----- HELPERS : Register Input Validation 
 function validateRegisterInput({fullname, username, email, password}) {
     const errors = [];
     
     if(!fullname || !fullname.trim()){
-        error.push("Fullname wajib diisi");
+        errors.push("Fullname wajib diisi");
     }
 
     if (!username || !username.trim()) {
@@ -37,7 +38,7 @@ function validateRegisterInput({fullname, username, email, password}) {
 
 }
 
-//----- (REGISTER) POST /api/auth/register
+//----- REGISTER : POST /api/auth/register
 async function register(req, res) {
   try {
     const { fullname, username, email, password } = req.body;
@@ -120,7 +121,7 @@ async function register(req, res) {
   }
 }
 
-//----- (VERIFY EMAIL FIXED) GET /api/auth/verify-email
+//----- VERIFY EMAIL : GET /api/auth/verify-email
 async function verifyEmail(req, res) {
     try {
         const { token } = req.query;
@@ -170,6 +171,90 @@ async function verifyEmail(req, res) {
     }
 }
 
+//----- HELPER: Login Input Validation 
+function validateLoginInput({ username, password }) {
+    const errors = [];
 
-module.exports = {register,verifyEmail};
+    if (!username && username.trim) {
+        errors.push('Username wajib diisi');
+    }
+    if (!password || password.trim()) {
+        errors.push('Password wajib diisi');
+    }
+    return { valid: errors.length === 0, errors };
+}
+
+//------ CONTROLLER: LOGIN : POST /api/auth/login
+async function login(req, res) {
+    try {
+        const { username, password } = req.body;
+
+        // 1. Validation for the input
+        const { valid, errors } = validateLoginInput({ username, password });
+
+        if(!valid) {
+            return res.status(400).json({status:'fail',message: 'Validasi gagal', errors})
+        }
+
+        // 2. find user by email or username
+        const user = await User.findOne({ where: { user_name: username}, });
+
+        if (!user) {
+            return res.status(401).json({status: 'fail', message: 'Username atau password salah'});
+       
+        }
+
+        // 3. Check is user verified or not
+        if (user.verified !== 'yes') {
+            return res.status(403).json({
+                status: 'fail',
+                message: 'Akun belum terverifikasi. silakan cek email terlebih dahulu',
+            });
+        }
+
+        // 4. Check password
+        const passwordMatch = await bcrypt.compare(password, user.user_password);
+        if (!passwordMatch){
+            return res.status(401).json({
+                status: 'fail',
+                message: 'Username atau password salah'
+            })
+        }
+
+        // 5. Generate JWT 
+        const payload = {
+            user_id:user.user_id,
+            username: user.user_name,
+            email:user.user_email,
+        };
+
+        const token = jwt.sign(payload,process.env.JWT_SECRET,{
+            expiresIn: '24h',
+        })
+        
+        // 6. response success
+        return res.status(200).json({
+            status: 'success',
+            message: 'Login berhasil',
+            data: {
+                token,
+                user: {
+                    user_id: user.user_id,
+                    fullname: user.fullname,
+                    username: user.user_name,
+                    email: user.user_email,
+                },
+            },
+        }); 
+    } catch (err) {
+        console.error('[LOGIN ERROR]', err);
+        return res.status(500).json({
+            status: 'error',
+            message: 'Terjadi kesalahan pada server',
+        });
+    }
+}
+
+
+module.exports = {register,verifyEmail,login};
 

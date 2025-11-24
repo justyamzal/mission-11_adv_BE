@@ -28,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
             },
             token: DataTypes.STRING,
             verified: {
-                type: DataTypes.ENUM("pending","no"),
+                type: DataTypes.ENUM("pending","yes"),
                 defaultValue: "pending",
             },
         },

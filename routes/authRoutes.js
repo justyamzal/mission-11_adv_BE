@@ -8,5 +8,7 @@ const router = express.Router();
 router.post('/register', register);
 // Verify Email
 router.get('/verify-email', verifyEmail);
+// Login
+router.post('/login', login);
 
 module.exports = router;

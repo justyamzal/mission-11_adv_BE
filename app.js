@@ -25,6 +25,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api/films', filmSeriesRoutes); // ⬅️ TAMBAH
 
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);

@@ -175,10 +175,10 @@ async function verifyEmail(req, res) {
 function validateLoginInput({ username, password }) {
     const errors = [];
 
-    if (!username && username.trim) {
+    if (!username && !username.trim) {
         errors.push('Username wajib diisi');
     }
-    if (!password || password.trim()) {
+    if (!password || !password.trim()) {
         errors.push('Password wajib diisi');
     }
     return { valid: errors.length === 0, errors };

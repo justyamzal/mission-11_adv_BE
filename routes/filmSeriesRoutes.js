@@ -4,7 +4,7 @@ const express = require("express");
 const router = express.Router();
 
 const auth = require("../middleware/authMiddleware");
-const filmController = require("../controllers/filmSeriesController");
+const filmController = require("../controllers/filmSeriesControllers");
 
 // CREATE Film/Series  (butuh login & JWT)
 router.post("/", auth, filmController.createFilm);

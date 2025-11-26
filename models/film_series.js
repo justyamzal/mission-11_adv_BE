@@ -59,13 +59,15 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "FilmSeries",      // nama model di Sequelize
+      modelName: "filmSeries",      // nama model di Sequelize
       tableName: "Film_Series",     // nama tabel di MySQL
       timestamps: false,
     }
   );
 
-  return FilmSeries;
+  return filmSeries;
 };
+
+
 
 

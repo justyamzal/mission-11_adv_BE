@@ -1,6 +1,7 @@
 // controllers/filmSeriesController.js
 
-const { FilmSeries } = require('../models');
+const { filmSeries } = require('../models');
+const { op } = require('sequelize');
 
 //----- CREATE: POST/api/filmseries
 
@@ -29,7 +30,7 @@ async function createFilm(req, res) {
             });
         }
         
-        const newFilm = await FilmSeries.create({
+        const newFilm = await filmSeries.create({
         genre_id,
         film_series_title,
         category,
@@ -63,7 +64,7 @@ async function createFilm(req, res) {
 //----- READ ALL: GET /api/films
 async function getAllFilms(req, res) {
   try {
-    const films = await FilmSeries.findAll();
+    const films = await filmSeries.findAll();
 
     return res.status(200).json({
       status: "success",
@@ -84,7 +85,7 @@ async function getFilmById(req, res) {
   try {
     const { id } = req.params;
 
-    const film = await FilmSeries.findByPk(id);
+    const film = await filmSeries.findByPk(id);
 
     if (!film) {
       return res.status(404).json({
@@ -107,12 +108,12 @@ async function getFilmById(req, res) {
   }
 }
 
-// PATCH /api/films/:id
+//----- PATCH /api/films/:id
 async function updateFilm(req, res) {
   try {
     const { id } = req.params;
 
-    const film = await FilmSeries.findByPk(id);
+    const film = await filmSeries.findByPk(id);
 
     if (!film) {
       return res.status(404).json({
@@ -138,13 +139,12 @@ async function updateFilm(req, res) {
   }
 }
 
-
-// DELETE: DELETE /api/films/:id
+//----- DELETE: DELETE /api/films/:id
 async function deleteFilm(req, res) {
   try {
     const { id } = req.params;
 
-    const film = await FilmSeries.findByPk(id);
+    const film = await filmSeries.findByPk(id);
 
     if (!film) {
       return res.status(404).json({
@@ -167,6 +167,9 @@ async function deleteFilm(req, res) {
     });
   }
 }
+
+
+
 
 module.exports = {
   createFilm,
